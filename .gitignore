@@ -61,3 +61,4 @@ TestResult.xml
 nunit-*.xml
 /.vs
 *.dll
+SDL3_Backend_Tests/README.md

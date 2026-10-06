@@ -1,0 +1,69 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<PlatformTarget>x64</PlatformTarget>
+		<LangVersion>14.0</LangVersion>
+		<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+		<EnableNETAnalyzers>False</EnableNETAnalyzers>
+		<AnalysisLevel>none</AnalysisLevel>
+		<UseWindowsForms>false</UseWindowsForms>
+		<Platforms>x64</Platforms>
+		<Platform Condition="'$(Platform)' == ''">x64</Platform>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<Sdl3DllPath Condition="'$(SDL3_DLL_PATH)' != ''">$(SDL3_DLL_PATH)</Sdl3DllPath>
+		<Sdl3DllPath Condition="'$(Sdl3DllPath)' == ''">$(MSBuildThisFileDirectory)..\NativeDependencies\SDL3\x64\SDL3.dll</Sdl3DllPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<WarningLevel>8</WarningLevel>
+		<DebugType>portable</DebugType>
+		<DefineConstants>$(DefineConstants);WIN64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<WarningLevel>8</WarningLevel>
+		<DebugType>portable</DebugType>
+		<DefineConstants>$(DefineConstants);WIN64</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Memory\SdlAllocatorTestProcess.cs" />
+	  <Compile Remove="Memory\SDL_MemoryCallback_Tests.cs" />
+	  <Compile Remove="Memory\SDL_MemoryCursor_Tests.cs" />
+	  <Compile Remove="Memory\SDL_MemoryUnsafe_Tests.cs" />
+	  <Compile Remove="Memory\SDL_Memory_Tests.cs" />
+	  <Compile Remove="Memory\SDL_NativeMemory_Tests.cs" />
+	  <Compile Remove="SdlRuntimeCollection.cs" />
+	  <Compile Remove="SdlTestCollectionBehavior.cs" />
+	  <Compile Remove="StdInc\SDL_StdInc_Tests.cs" />
+	  <Compile Remove="Types\SDL_Pointer_Tests.cs" />
+	  <Compile Remove="Types\SDL_Size_Tests.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+		<PackageReference Include="xunit" Version="2.9.3" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SDL_Backend\SDL3_Backend.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="StdInc\" />
+	</ItemGroup>
+	<Target Name="ValidateSdl3BackendTestInputs" BeforeTargets="AssignProjectConfiguration;ResolveProjectReferences;CoreCompile">
+		<Error Condition="'$(Platform)' != 'x64'" Text="SDL3_Backend_Tests only supports Platform=x64 because it tests the x64 SDL3_Backend build and x64 SDL3.dll." />
+		<Error Condition="'$(Sdl3DllPath)' == ''" Text="SDL3_Backend_Tests requires SDL3.dll. Add NativeDependencies\SDL3\x64\SDL3.dll or set SDL3_DLL_PATH to a valid x64 SDL3.dll." />
+		<Error Condition="'$(Sdl3DllPath)' != '' and !Exists('$(Sdl3DllPath)')" Text="SDL3_Backend_Tests could not find SDL3.dll at '$(Sdl3DllPath)'. Add NativeDependencies\SDL3\x64\SDL3.dll or set SDL3_DLL_PATH to a valid x64 SDL3.dll." />
+	</Target>
+	<Target Name="CopySdl3Dll" AfterTargets="Build">
+		<Copy SourceFiles="$(Sdl3DllPath)" DestinationFiles="$(TargetDir)SDL3.dll" />
+	</Target>
+</Project>
