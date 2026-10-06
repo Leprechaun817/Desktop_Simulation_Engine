@@ -23,7 +23,7 @@ namespace SDL3_Backend_Tests
 				Assert.Equal((nint)(&value), pointer.Address);
 				Assert.Equal(pointer, (VoidPtr)(nint)pointer);
 				Assert.True((void*)pointer == &value);
-				Assert.Equal($"0x{pointer.Address}", pointer.ToString());
+				Assert.Equal($"0x{pointer.Address:x}", pointer.ToString());
 
 				ConstVoidPtr constantPointer = ConstVoidPtr.From(&value);
 				Assert.False(constantPointer.IsNull);

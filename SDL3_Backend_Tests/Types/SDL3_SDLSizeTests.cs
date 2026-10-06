@@ -145,7 +145,7 @@ namespace SDL3_Backend_Tests
 				Assert.Equal(new SDLSize(3), value);
 
 				value--;
-				Assert.Equal(new SDLSize(3), value);
+				Assert.Equal(new SDLSize(2), value);
 			}
 
 			[Fact]

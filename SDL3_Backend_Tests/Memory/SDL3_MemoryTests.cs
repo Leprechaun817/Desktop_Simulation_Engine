@@ -342,7 +342,7 @@ namespace SDL3_Backend_Tests
 					Assert.Equal(new byte[] { 1, 1, 2, 3, 4 }, values);
 				}
 				else {
-					SDLMemory.Move(values.AsSpan(0, 4), values.AsSpan());
+					SDLMemory.Move(values.AsSpan(0, 4), values.AsSpan(1));
 					Assert.Equal(new byte[] { 2, 3, 4, 5, 5 }, values);
 				}
 
