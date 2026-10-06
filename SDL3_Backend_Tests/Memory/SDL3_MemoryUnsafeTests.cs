@@ -125,7 +125,7 @@ namespace SDL3_Backend_Tests
 						MemoryUnsafe.TryRealloc(alignedMem.Pointer, new SDLSize(64), out _)
 					);
 					Assert.Throws<InvalidOperationException>(() =>
-						MemoryUnsafe.AlignedFree(normalMem.Pointer);
+						MemoryUnsafe.AlignedFree(normalMem.Pointer)
 					);
 
 					Assert.Throws<ArgumentException>(() =>
