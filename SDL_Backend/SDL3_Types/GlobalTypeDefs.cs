@@ -34,6 +34,8 @@ global using unsafe SDLCallocFunctionPtr = delegate* unmanaged[Cdecl]<nuint, nui
 global using unsafe SDLReallocFunctionPtr = delegate* unmanaged[Cdecl]<void*, nuint, void*>;
 global using unsafe SDLFreeFunctionPtr = delegate* unmanaged[Cdecl]<void*, void>;
 
+global using unsafe SDLCompareFunctionPtr = delegate* unmanaged[Cdecl]<void*, void*, int>;
+
 #pragma warning restore CS8981
 
 namespace SDL3
