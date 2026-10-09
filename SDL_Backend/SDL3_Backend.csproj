@@ -50,6 +50,9 @@
 		<DefineConstants>$(DefineConstants);WIN32</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Folder Include="SDL3_StdInc\SDL3_Printf\" />
+	  <Folder Include="SDL3_StdInc\SDL3_IOStream\" />
+	  <Folder Include="SDL3_StdInc\SDL3_Random\" />
 	  <Folder Include="SDL3_StdInc\SDL3_Character\" />
 	  <Folder Include="SDL3_StdInc\SDL3_Math\" />
 	  <Folder Include="SDL3_StdInc\SDL3_String\" />

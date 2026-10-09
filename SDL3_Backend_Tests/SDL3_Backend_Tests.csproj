@@ -55,9 +55,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SDL_Backend\SDL3_Backend.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="StdInc\" />
-	</ItemGroup>
 	<Target Name="ValidateSdl3BackendTestInputs" BeforeTargets="AssignProjectConfiguration;ResolveProjectReferences;CoreCompile">
 		<Error Condition="'$(Platform)' != 'x64'" Text="SDL3_Backend_Tests only supports Platform=x64 because it tests the x64 SDL3_Backend build and x64 SDL3.dll." />
 		<Error Condition="'$(Sdl3DllPath)' == ''" Text="SDL3_Backend_Tests requires SDL3.dll. Add NativeDependencies\SDL3\x64\SDL3.dll or set SDL3_DLL_PATH to a valid x64 SDL3.dll." />
