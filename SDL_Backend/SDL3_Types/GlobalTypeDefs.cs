@@ -29,6 +29,16 @@ global using unsafe uiptr = uint*;
 global using unsafe lptr = long*;
 global using unsafe ulptr = ulong*;
 
+global using unsafe vdptr = void**;
+global using unsafe bdptr = byte**;
+global using unsafe sbdptr = sbyte**;
+global using unsafe shdptr = short**;
+global using unsafe ushdptr = ushort**;
+global using unsafe idptr = int**;
+global using unsafe uidptr = uint**;
+global using unsafe ldptr = long**;
+global using unsafe uldptr = ulong**;
+
 global using unsafe SDLMallocFunctionPtr = delegate* unmanaged[Cdecl]<nuint, void*>;
 global using unsafe SDLCallocFunctionPtr = delegate* unmanaged[Cdecl]<nuint, nuint, void*>;
 global using unsafe SDLReallocFunctionPtr = delegate* unmanaged[Cdecl]<void*, nuint, void*>;
