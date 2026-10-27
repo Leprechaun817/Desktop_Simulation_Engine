@@ -51,7 +51,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <Folder Include="SDL3_StdInc\SDL3_IOStream\Unsafe\" />
-	  <Folder Include="SDL3_StdInc\SDL3_Printf\" />
 	  <Folder Include="SDL3_StdInc\SDL3_Character\" />
 	  <Folder Include="SDL3_StdInc\SDL3_Math\" />
 	</ItemGroup>
