@@ -29,36 +29,35 @@ namespace SDL3
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_isxdigit")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_isxdigit(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ispunct")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_ispunct(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_isspace")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_isspace(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_isupper")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_isupper(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_islower")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_islower(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_isgraph")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_isgraph(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_toupper")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
+			internal static partial int SDL_toupper(int x);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_tolower")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial int SDL_
-
+			internal static partial int SDL_tolower(int x);
 		}
 	}
 }
