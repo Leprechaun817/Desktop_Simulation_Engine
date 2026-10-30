@@ -50,6 +50,10 @@
 		<DefineConstants>$(DefineConstants);WIN32</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Folder Include="NativeHelpers\SDL3_NativeEllipsis\" />
 	  <Folder Include="SDL3_StdInc\SDL3_IOStream\Unsafe\" />
+	  <Folder Include="SDL3_StdInc\SDL3_Printf\Unsafe\" />
 	</ItemGroup>
+
+	<Import Project="NativeHelpers\SdlNativeEllipsis\SdlNativeEllipsisHelper.targets" />
 </Project>

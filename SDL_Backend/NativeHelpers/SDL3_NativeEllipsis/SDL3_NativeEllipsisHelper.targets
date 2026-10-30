@@ -1,0 +1,44 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<SdlNativeEllipsisHelperDir>$(MSBuildThisFileDirectory)</SdlNativeEllipsisHelperDir>
+	<SdlNativeEllipsisHelperProject>$(SdlNativeEllipsisHelperDir)sdl_native_ellipsis_helper.vcxproj</SdlNativeEllipsisHelperProject>
+	<SdlNativeEllipsisManagedPlatform Condition="'$(Platform)' != ''">$(Platform)</SdlNativeEllipsisManagedPlatform>
+	<SdlNativeEllipsisManagedPlatform Condition="'$(SdlNativeEllipsisManagedPlatform)' == ''">$(PlatformTarget)</SdlNativeEllipsisManagedPlatform>
+	<SdlNativeEllipsisHelperNativePlatform Condition="'$(Platform)' == 'x86' Or '$(PlatformTarget)' == 'x86'">Win32</SdlNativeEllipsisHelperNativePlatform>
+	<SdlNativeEllipsisHelperNativePlatform Condition="'$(SdlNativeEllipsisHelperNativePlatform)' == ''">x64</SdlNativeEllipsisHelperNativePlatform>
+	<SdlNativeEllipsisHelperOutputDir>$(MSBuildProjectDirectory)\bin\$(SdlNativeEllipsisManagedPlatform)\$(Configuration)\$(TargetFramework)\</SdlNativeEllipsisHelperOutputDir>
+	<SdlNativeEllipsisHelperOutputDll>$(SdlNativeEllipsisHelperOutputDir)sdl_native_ellipsis_helper.dll</SdlNativeEllipsisHelperOutputDll>
+	<SdlNativeEllipsisHelperIntermediateDir>$(MSBuildProjectDirectory)\$(BaseIntermediateOutputPath)sdl_native_ellipsis_helper\$(SdlNativeEllipsisHelperNativePlatform)\$(Configuration)\</SdlNativeEllipsisHelperIntermediateDir>
+	<SdlNativeEllipsisVCTargetsPath Condition="'$(VCTargetsPath)' != ''">$(VCTargetsPath)</SdlNativeEllipsisVCTargetsPath>
+	<SdlNativeEllipsisVCTargetsPath Condition="'$(SdlNativeEllipsisVCTargetsPath)' == '' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\18\BuildTools\MSBuild\Microsoft\VC\v180\Microsoft.Cpp.Default.props')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\18\BuildTools\MSBuild\Microsoft\VC\v180\</SdlNativeEllipsisVCTargetsPath>
+	<SdlNativeEllipsisVCTargetsPath Condition="'$(SdlNativeEllipsisVCTargetsPath)' == '' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.Cpp.Default.props')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\</SdlNativeEllipsisVCTargetsPath>
+	<SdlNativeEllipsisMSBuildExe Condition="'$(SdlNativeEllipsisMSBuildExe)' == '' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\18\BuildTools\MSBuild\Current\Bin\MSBuild.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\18\BuildTools\MSBuild\Current\Bin\MSBuild.exe</SdlNativeEllipsisMSBuildExe>
+	<SdlNativeEllipsisMSBuildExe Condition="'$(SdlNativeEllipsisMSBuildExe)' == '' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe</SdlNativeEllipsisMSBuildExe>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+	<SdlNativeEllipsisHelperInput Include="$(SdlNativeEllipsisHelperDir)sdl_native_ellipsis_helper.c" />
+	<SdlNativeEllipsisHelperInput Include="$(SdlNativeEllipsisHelperDir)sdl_native_ellipsis_helper.h" />
+	<SdlNativeEllipsisHelperInput Include="$(SdlNativeEllipsisHelperProject)" />
+	<SdlNativeEllipsisHelperInput Include="$(SdlNativeEllipsisHelperDir)SdlNativeEllipsisHelper.targets" />
+	<ContentWithTargetPath Include="$(SdlNativeEllipsisHelperOutputDll)">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  <TargetPath>sdl_native_ellipsis_helper.dll</TargetPath>
+	  <Visible>false</Visible>
+	</ContentWithTargetPath>
+  </ItemGroup>
+
+  <Target
+	Name="BuildSdlNativeEllipsisHelper"
+	BeforeTargets="CoreCompile"
+	Condition="'$(OS)' == 'Windows_NT'"
+	Inputs="@(SdlNativeEllipsisHelperInput)"
+	Outputs="$(SdlNativeEllipsisHelperOutputDll)">
+	<MakeDir Directories="$(SdlNativeEllipsisHelperOutputDir)" />
+	<Error
+	  Condition="'$(SdlNativeEllipsisMSBuildExe)' == ''"
+	  Text="Unable to locate Visual Studio MSBuild.exe for sdl_native_ellipsis_helper. Install Visual Studio Build Tools or set SdlNativeEllipsisMSBuildExe." />
+	<Exec
+	  Command="&quot;$(SdlNativeEllipsisMSBuildExe)&quot; &quot;$(SdlNativeEllipsisHelperProject)&quot; /t:Build /p:Configuration=$(Configuration) /p:Platform=$(SdlNativeEllipsisHelperNativePlatform) /p:OutDir=$(SdlNativeEllipsisHelperOutputDir) /p:IntDir=$(SdlNativeEllipsisHelperIntermediateDir) /p:WindowsTargetPlatformVersion=10.0 /nologo /v:minimal" />
+  </Target>
+</Project>
