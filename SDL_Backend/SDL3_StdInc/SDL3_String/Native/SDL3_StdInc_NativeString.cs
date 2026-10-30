@@ -35,9 +35,13 @@ namespace SDL3
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
 			internal static partial bptr SDL_strdup(bptr str);
 
+			[LibraryImport(sdllib, EntryPoint = "SDL_strndup")]
+			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+			internal static partial bptr SDL_strndup(bptr str, size_t maxlen);
+
 			[LibraryImport(sdllib, EntryPoint = "SDL_strrev")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial bptr SDL_strrev(bptr str, size_t maxlen);
+			internal static partial bptr SDL_strrev(bptr str);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_strupr")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -62,6 +66,10 @@ namespace SDL3
 			[LibraryImport(sdllib, EntryPoint = "SDL_strnstr")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
 			internal static partial bptr SDL_strnstr(bptr haystack, bptr needle, size_t maxlen);
+
+			[LibraryImport(sdllib, EntryPoint = "SDL_strcasestr")]
+			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+			internal static partial bptr SDL_strcasestr(bptr haystack, bptr needle);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_strtok_r")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -104,9 +112,9 @@ namespace SDL3
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
 			internal static partial CLong SDL_strtol(bptr str, bdptr endp, int baseRadix);
 
-			[LibraryImport(sdllib, EntryPoint = "SDL_stroul")]
+			[LibraryImport(sdllib, EntryPoint = "SDL_strtoul")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial CULong SDL_stroul(bptr str, bdptr endp, int baseRadix);
+			internal static partial CULong SDL_strtoul(bptr str, bdptr endp, int baseRadix);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_strtoll")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -126,15 +134,15 @@ namespace SDL3
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_utf8strnlen")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial size_t SDL_utf8nlen(bptr str, size_t bytes);
+			internal static partial size_t SDL_utf8strnlen(bptr str, size_t bytes);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_StepUTF8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial size_t SDL_StepUTF8(bdptr pstr, size_t* pslen);
+			internal static partial uint SDL_StepUTF8(bdptr pstr, size_t* pslen);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_StepBackUTF8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial size_t SDL_StepBackUTF8(bptr start, bdptr pstr);
+			internal static partial uint SDL_StepBackUTF8(bptr start, bdptr pstr);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_UCS4ToUTF8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
