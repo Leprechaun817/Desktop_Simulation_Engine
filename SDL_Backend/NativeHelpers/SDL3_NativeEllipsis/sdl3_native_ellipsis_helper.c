@@ -416,7 +416,7 @@ SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_s
 		default:
 			sdl_native_ellipsis_set_last_error("unsupported printf slot count");
 
-			return SDL_NATIVE_ELLIPSIS_ERROR;
+			return SDL_NATIVE_ELLIPSIS_SIZE_ERROR;
 	}
 }
 
@@ -461,7 +461,7 @@ SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_a
 		default:
 			sdl_native_ellipsis_set_last_error("unsupported printf slot count");
 
-			return SDL_NATIVE_ELLIPSIS_ERROR;
+			return SDL_NATIVE_ELLIPSIS_SIZE_ERROR;
 	}
 }
 
@@ -513,7 +513,7 @@ SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_s
 		default:
 			sdl_native_ellipsis_set_last_error("unsupported printf slot count");
 
-			return SDL_NATIVE_ELLIPSIS_ERROR;
+			return SDL_NATIVE_ELLIPSIS_SIZE_ERROR;
 	}
 }
 
@@ -563,7 +563,7 @@ SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_s
 		default:
 			sdl_native_ellipsis_set_last_error("unsupported printf slot count");
 
-			return SDL_NATIVE_ELLIPSIS_ERROR;
+			return SDL_NATIVE_ELLIPSIS_SIZE_ERROR;
 	}
 }
 
@@ -611,7 +611,7 @@ SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_l
 		default:
 			sdl_native_ellipsis_set_last_error("unsupported printf slot count");
 
-			return SDL_NATIVE_ELLIPSIS_ERROR;
+			return SDL_NATIVE_ELLIPSIS_SIZE_ERROR;
 	}
 }
 
