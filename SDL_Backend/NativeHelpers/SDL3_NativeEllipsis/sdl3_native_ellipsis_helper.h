@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-	enum sdl_native_allipsis_printf_slot_kind 
+	enum sdl_native_ellipsis_printf_slot_kind
 	{
 		SDL_NATIVE_ELLIPSIS_PRINTF_SIGNED_INTEGER = 1,
 		SDL_NATIVE_ELLIPSIS_PRINTF_UNSIGNED_INTEGER = 2,
@@ -24,7 +24,7 @@ extern "C" {
 		SDL_NATIVE_ELLIPSIS_PRINTF_UTF8_STRING = 4,
 		SDL_NATIVE_ELLIPSIS_PRINTF_WIDE_STRING = 5,
 		SDL_NATIVE_ELLIPSIS_PRINTF_POINTER = 6
-	}
+	};
 
 	typedef struct sdl_native_ellipsis_printf_slot 
 	{
@@ -49,7 +49,7 @@ extern "C" {
 	SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_snprintf(char* text, size_t maxlen, const char* fmt, const sdl_native_ellipsis_printf_slot* slots,
 																						    size_t slot_count);
 	SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_asprintf(char** text, const char* fmt, const sdl_native_ellipsis_printf_slot* slots, size_t slot_count);
-	SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_swprintf(void* text, size_t maxlen, const void* fmt, const sdl_native_ellipsis_prinf_slot* slots, 
+	SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_swprintf(void* text, size_t maxlen, const void* fmt, const sdl_native_ellipsis_printf_slot* slots, 
 																							size_t slot_count, int wchar_size);
 	SDL3_NATIVE_ELLIPSIS_EXPORT int SDL3_NATIVE_ELLIPSIS_CDECL sdl_native_ellipsis_ioprintf(void* context, const char* fmt, const sdl_native_ellipsis_printf_slot* slots, size_t slot_count);
 
