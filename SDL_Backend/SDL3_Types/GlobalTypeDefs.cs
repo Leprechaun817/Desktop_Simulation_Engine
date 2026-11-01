@@ -55,6 +55,8 @@ namespace SDL3
 		public static class GlobalConstants
 		{
 			public const string sdllib = "SDL3.dll";
+			public const string helperlib = "sdl_native_ellipsis_helper";
+
 		}
 	}
 }
