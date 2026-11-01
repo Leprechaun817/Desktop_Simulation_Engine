@@ -53,7 +53,7 @@ namespace SDL3
 		{
 			private static readonly object syncRoot = new object();
 			private static SDLInteropProfile? current;
-			private static SDLV
+			//private static SDLV
 		}
 	}
 }
