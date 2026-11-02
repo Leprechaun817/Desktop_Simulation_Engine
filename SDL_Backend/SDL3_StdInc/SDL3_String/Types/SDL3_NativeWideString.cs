@@ -201,5 +201,130 @@ namespace SDL3
 				builder.Append('\uFFFD');
 			}
 		}
+
+		internal interface ISDLNativeWideString<TSelf> : IDisposable where TSelf : ISDLNativeWideString<TSelf>
+		{
+			static abstract TSelf FromString(string value, int nativeCharByteCount);
+			ConstVoidPtr Pointer { get; }
+			int NativeCharByteCount { get; }
+			int CharBufferSize { get; }
+		}
+
+		internal sealed unsafe class SDLNativeWideString : ISDLNativeWideString<SDLNativeWideString>
+		{
+			private IntPtr buffer;
+			private int nativeCharByteCount;
+			private int charBufferSize;
+
+			public ConstVoidPtr Pointer
+			{
+				get
+				{
+					ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
+					return new ConstVoidPtr((vptr)buffer);
+				}
+			}
+
+			public int NativeCharByteCount
+			{
+				get
+				{
+					return nativeCharByteCount;
+				}
+			}
+
+			public int CharBufferSize
+			{
+				get
+				{
+					return charBufferSize;
+				}
+			}
+
+			private SDLNativeWideString(IntPtr buffer, int nativeCharByteCount, int charBufferSize)
+			{
+				this.buffer = buffer;
+				this.nativeCharByteCount = nativeCharByteCount;
+				this.charBufferSize = charBufferSize;
+			}
+
+			public static SDLNativeWideString FromString(string value, int nativeCharByteCount)
+			{
+				ArgumentNullException.ThrowIfNull(value);
+
+				IntPtr buffer = SDLNativeWideText.AllocateStringBuffer(value, nativeCharByteCount);
+
+				return new SDLNativeWideString(buffer, nativeCharByteCount, checked(SDLNativeWideText.GetNativeCharacterLength(value, nativeCharByteCount) + 1));
+			}
+
+			internal static ptr AllocateString(string? value, int nativeCharByteCount, ref List<IntPtr>? ownedBuffers)
+			{
+				if (value == null) {
+					return 0;
+				}
+
+				IntPtr buffer = SDLNativeWideText.AllocateStringBuffer(value, nativeCharByteCount);
+
+				if (ownedBuffers == null) {
+					ownedBuffers = new List<IntPtr>();
+				}
+
+				ownedBuffers.Add(buffer);
+
+				return (ptr)buffer;
+			}
+
+			public void Dispose()
+			{
+				if (buffer == IntPtr.Zero) {
+					return;
+				}
+
+				Marshal.FreeCoTaskMem(buffer);
+				buffer = IntPtr.Zero;
+			}
+		}
+
+		internal sealed unsafe class SDLNativeWideBuffer : IDisposable
+		{
+			private IntPtr buffer;
+			private readonly int nativeCharByteCount;
+			private int charBufferSize;
+
+			internal int CharBufferSize
+			{
+				get
+				{
+					return charBufferSize;
+				}
+			}
+
+			internal VoidPtr Pointer
+			{
+				get
+				{
+					ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
+					return new VoidPtr((vptr)buffer);
+				}
+			}
+
+			internal SDLNativeWideBuffer(int charBufferSize, int nativeCharByteCount)
+			{
+				if (charBufferSize <= 0) {
+					throw new ArgumentOutOfRangeException(nameof(charBufferSize), "The native wide-character buffer must contain at least one element.");
+				}
+				SDLNativeWideText.ValidateNativeCharacterByteCount(nativeCharByteCount);
+
+				this.charBufferSize = charBufferSize;
+				this.nativeCharByteCount = nativeCharByteCount;
+
+				int byteCount = checked(charBufferSize * nativeCharByteCount);
+				buffer = Marshal.AllocCoTaskMem(byteCount);
+				new Span<byte>((vptr)buffer, byteCount).Clear();
+			}
+
+			internal SDLWideString
+
+		}
 	}
 }
