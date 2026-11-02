@@ -23,7 +23,7 @@ namespace SDL3
 		public enum SDLValistABI
 		{
 			Unsupported,
-			WindowsMSVC_x64_86
+			WindowsMSVC_x64_86,
 			WindowsMSVC_x86,
 			LinuxSystemV_x64_86,
 			Linux_i386Stack,
