@@ -323,8 +323,55 @@ namespace SDL3
 				new Span<byte>((vptr)buffer, byteCount).Clear();
 			}
 
-			internal SDLWideString
+			internal SDLWideStringBuffer ToWideStringBuffer()
+			{
+				return new SDLWideStringBuffer(Pointer, new SDLSize((size_t)charBufferSize));
+			}
 
+			internal void CopyFrom(ReadOnlySpan<char> src)
+			{
+				ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
+				SDLNativeWideText.CopyManagedCharsToNative(src, Pointer, charBufferSize, nativeCharByteCount);
+			}
+
+			internal string ToManagedString(int nativeWideCharLength)
+			{
+				ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
+
+				int actualCharLength = Math.Clamp(nativeWideCharLength, 0, charBufferSize - 1);
+
+				return SDLNativeWideText.ToManagedString((vptr)buffer, actualCharLength, nativeCharByteCount);
+			}
+
+			internal string ToManagedString()
+			{
+				ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
+
+				int length = SDLNativeWideText.GetNullTerminatedLength(ConstVoidPtr.From(Pointer), nativeCharByteCount);
+
+				return ToManagedString(length);
+			}
+
+			internal void CopyTo(Span<char> dest, int nativeWideCharLength)
+			{
+				string value = ToManagedString(nativeWideCharLength);
+				int copyLength = Math.Min(value.Length, dest.Length);
+				value.AsSpan(0, copyLength).CopyTo(dest);
+
+				if (copyLength < dest.Length) {
+					dest[copyLength] = '\0';
+				}
+			}
+
+			public void Dispose()
+			{
+				if (buffer == IntPtr.Zero) {
+					return;
+				}
+
+				Marshal.FreeCoTaskMem(buffer);
+				buffer = IntPtr.Zero;
+			}
 		}
 	}
 }
