@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SDL3.Unsafe;
 
 namespace SDL3
