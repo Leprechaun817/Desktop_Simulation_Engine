@@ -19,6 +19,7 @@ global using mptr = nint;
 global using size_t = nuint;
 global using ptr = nuint;
 
+global using unsafe cptr = char*;
 global using unsafe vptr = void*;
 global using unsafe bptr = byte*;
 global using unsafe sbptr = sbyte*;
@@ -29,6 +30,7 @@ global using unsafe uiptr = uint*;
 global using unsafe lptr = long*;
 global using unsafe ulptr = ulong*;
 
+global using unsafe cdptr = char**;
 global using unsafe vdptr = void**;
 global using unsafe bdptr = byte**;
 global using unsafe sbdptr = sbyte**;
