@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
+using Backend.CustomMarshallers;
 
 namespace SDL3
 {
@@ -16,7 +18,7 @@ namespace SDL3
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_CreateEnvironment")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial vptr SDL_CreateEnvironment([MarshalAs(UnmanagedType.I1)] bool populated);
+			internal static partial vptr SDL_CreateEnvironment([MarshalUsing(typeof(SDLBoolMarshaller))] bool populated);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_GetEnvironmentVariable")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -29,11 +31,11 @@ namespace SDL3
 			[LibraryImport(sdllib, EntryPoint = "SDL_SetEnvironmentVariable")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
 			[return: MarshalAs(UnmanagedType.I1)]
-			internal static partial bool SDL_SetEnvironmentVariable(vptr env, bptr name, bptr value, [MarshalAs(UnmanagedType.I1)] bool overwrite);
+			internal static partial bool SDL_SetEnvironmentVariable(vptr env, bptr name, bptr value, [MarshalUsing(typeof(SDLBoolMarshaller))] bool overwrite);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_UnsetEnvironmentVariable")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_UnsetEnvironmentVariable(vptr env, bptr name);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_DestroyEnvironment")]

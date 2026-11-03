@@ -1,8 +1,9 @@
-using SDL3.Unsafe;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.Marshalling;
+using Backend.CustomMarshallers;
+using SDL3.Unsafe;
 
 namespace SDL3
 {
@@ -32,6 +33,7 @@ namespace SDL3
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_CloseIO")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_CloseIO(vptr context);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_GetIOProperties")]
@@ -68,12 +70,12 @@ namespace SDL3
 
 			[LibraryImport(sdllib, EntryPoint = "FlushIO")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_FlushIO(vptr context);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_LoadFile_IO")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			internal static partial vptr SDL_LoadFile_IO(vptr src, size_t* datasize, [MarshalAs(UnmanagedType.I1)] bool closeio);
+			internal static partial vptr SDL_LoadFile_IO(vptr src, size_t* datasize, [MarshalUsing(typeof(SDLBoolMarshaller))] bool closeio);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_LoadFile")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -81,152 +83,152 @@ namespace SDL3
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_SaveFile_IO")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
-			internal static partial bool SDL_SaveFile_IO(vptr src, vptr data, size_t datasize, [MarshalAs(UnmanagedType.I1)] bool closeio);
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
+			internal static partial bool SDL_SaveFile_IO(vptr src, vptr data, size_t datasize, [MarshalUsing(typeof(SDLBoolMarshaller))] bool closeio);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_SaveFile")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_SaveFile(bptr file, vptr data, size_t datasize);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU8(vptr src, bptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS8(vptr src, sbptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU16LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU16LE(vptr src, ushptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS16LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS16LE(vptr src, shptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU16BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU16BE(vptr src, ushptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS16BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS16BE(vptr src, shptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU32LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU32LE(vptr src, uiptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS32LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS32LE(vptr src, iptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU32BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU32BE(vptr src, uiptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS32BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS32BE(vptr src, iptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU64LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU64LE(vptr src, ulptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS64LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS64LE(vptr src, lptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadU64BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadU64BE(vptr src, ulptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_ReadS64BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_ReadS64BE(vptr src, lptr value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU8(vptr dst, byte value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS8")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS8(vptr dst, sbyte value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU16LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU16LE(vptr dst, ushort value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS16LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS16LE(vptr dst, short value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU16BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU16BE(vptr dst, ushort value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS16BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS16BE(vptr dst, short value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU32LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU32LE(vptr dst, uint value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS32LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS32LE(vptr dst, int value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU32BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU32BE(vptr dst, uint value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS32BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS32BE(vptr dst, int value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU64LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU64LE(vptr dst, ulong value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS64LE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS64LE(vptr dst, long value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteU64BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteU64BE(vptr dst, ulong value);
 
 			[LibraryImport(sdllib, EntryPoint = "SDL_WriteS64BE")]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvCdecl) })]
-			[return: MarshalAs(UnmanagedType.I1)]
+			[return: MarshalUsing(typeof(SDLBoolMarshaller))]
 			internal static partial bool SDL_WriteS64BE(vptr dst, long value);
 		}
 	}
