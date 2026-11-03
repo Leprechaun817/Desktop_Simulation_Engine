@@ -17,6 +17,13 @@ global using mptr = nint;
 //ABI alias for C/SDL size_t type used in raw native signatures in interop declarations
 //Use sdlSize in wrapper/public APIs when the value should carry C/SDL size semantics
 global using size_t = nuint;
+
+//ABI alias for C off_t/off64_t
+//Both are signed integers - offset_t is the 32-bit alias, offset64_t is the 64-bit alias
+//Used mostly in C contexts, usually for Linux, BSD, or MacOS interop function imports
+global using offset_t = nint;
+global using offset64_t = long;
+
 global using ptr = nuint;
 
 global using unsafe cptr = char*;
