@@ -1,6 +1,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.Marshalling;
+using Backend.CustomMarshallers;
+
 
 namespace SDL3
 {
@@ -27,12 +29,13 @@ namespace SDL3
 
 			[LibraryImport("kernel32.dll", EntryPoint = "VirtualAlloc", SetLastError = true)]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvStdcall) })]
-			[return: MarshalAs(UnmanagedType.Bool)]
+			[return: MarshalUsing(typeof(SDLWin32BoolMarshaller))]
 			internal static partial bool VirtualProtect(vptr lpAddress, size_t dwSize, uint flNewProtect, out uint lpflOldProtect);
 
 			[LibraryImport("kernel32.dll", EntryPoint = "VirtualFree", SetLastError = true)]
 			[UnmanagedCallConv(CallConvs = new[] { typeof(CallConvStdcall) })]
-			[return: MarshalAs(UnmanagedType.Bool)]
+			[return: MarshalUsing(typeof(SDLWin32BoolMarshaller))]
+			internal static partial bool VirtualFree(vptr lpAddress, size_t dwSize, uint dwFreeType);
 		}
 	}
 }
