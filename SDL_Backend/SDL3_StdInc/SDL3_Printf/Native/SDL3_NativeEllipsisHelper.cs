@@ -19,7 +19,7 @@ namespace SDL3
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct SDLNativePrintfArgument
 		{
-			internal int kind;
+			internal int type;
 			internal int nativeByteCount;
 			internal long signedValue;
 			internal ulong unsignedValue;
