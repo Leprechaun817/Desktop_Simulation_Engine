@@ -48,6 +48,28 @@ namespace SDL3
 
 			private SDLValistBlock() {}
 
+			private ptr AllocateUTF8String(string? value)
+			{
+				if (value == null) {
+					return 0;
+				}
+
+				IntPtr buffer = Marshal.StringToCoTaskMemUTF8(value);
+
+				if (ownedUTF8Strings == null) {
+					ownedUTF8Strings = new List<IntPtr>();
+				}
+
+				ownedUTF8Strings.Add(buffer);
+
+				return (ptr)buffer;
+			}
+
+			private ptr AllocateWideString(string? value)
+			{
+				return SDLNativeWideString.AllocateString(value, )
+			}
+
 			private static void WriteUInt32(bptr target, uint value)
 			{
 				RuntimeUnsafe.WriteUnaligned(target, value);
