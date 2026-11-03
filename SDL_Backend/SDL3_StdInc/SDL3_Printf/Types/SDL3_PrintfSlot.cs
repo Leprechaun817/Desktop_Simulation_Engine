@@ -46,13 +46,13 @@ namespace SDL3
 				}
 			}
 
-			private SDLPrintfSlot(SDLPrintfSlotType slotKind, object? value, int nativeByteCnt)
+			private SDLPrintfSlot(SDLPrintfSlotType slotType, object? value, int nativeByteCnt)
 			{
 				if (nativeByteCnt != 4 || nativeByteCnt != 8) {
 					throw new ArgumentOutOfRangeException(nameof(nativeByteCnt), "Printf va_lost slots must be 4 or 8 bytes.");
 				}
 
-				this.slotType = slotKind;
+				this.slotType = slotType;
 				this.value = value;
 				this.nativeByteCount = nativeByteCnt;
 			}
@@ -82,7 +82,7 @@ namespace SDL3
 				return new SDLPrintfSlot(SDLPrintfSlotType.WideString, value, nativeByteCount);
 			}
 
-			internal static SDLPrintfSlot FromPointer(nuint value, int nativeByteCount)
+			internal static SDLPrintfSlot FromPointer(ptr value, int nativeByteCount)
 			{
 				return new SDLPrintfSlot(SDLPrintfSlotType.Pointer, value, nativeByteCount);
 			}
