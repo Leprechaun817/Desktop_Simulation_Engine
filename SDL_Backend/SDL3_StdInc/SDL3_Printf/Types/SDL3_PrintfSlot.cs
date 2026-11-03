@@ -4,7 +4,7 @@ namespace SDL3
 {
 	namespace Unsafe
 	{
-		internal enum SDLPrintfSlotKind
+		internal enum SDLPrintfSlotType
 		{
 			SignedInteger,
 			UnsignedInteger,
@@ -18,15 +18,15 @@ namespace SDL3
 		{
 			private const int nativeFloatingPointSize = 8;
 
-			private readonly SDLPrintfSlotKind slotKind;
+			private readonly SDLPrintfSlotType slotType;
 			private readonly object? value;
 			private readonly int nativeByteCount;
 
-			internal SDLPrintfSlotKind SlotKind
+			internal SDLPrintfSlotType SlotType
 			{
 				get
 				{
-					return slotKind;
+					return slotType;
 				}
 			}
 
@@ -46,45 +46,45 @@ namespace SDL3
 				}
 			}
 
-			private SDLPrintfSlot(SDLPrintfSlotKind slotKind, object? value, int nativeByteCnt)
+			private SDLPrintfSlot(SDLPrintfSlotType slotKind, object? value, int nativeByteCnt)
 			{
 				if (nativeByteCnt != 4 || nativeByteCnt != 8) {
 					throw new ArgumentOutOfRangeException(nameof(nativeByteCnt), "Printf va_lost slots must be 4 or 8 bytes.");
 				}
 
-				this.slotKind = slotKind;
+				this.slotType = slotKind;
 				this.value = value;
 				this.nativeByteCount = nativeByteCnt;
 			}
 
 			internal static SDLPrintfSlot FromSignedInteger(long value, int nativeByteCount)
 			{
-				return new SDLPrintfSlot(SDLPrintfSlotKind.SignedInteger, value, nativeByteCount);
+				return new SDLPrintfSlot(SDLPrintfSlotType.SignedInteger, value, nativeByteCount);
 			}
 
 			internal static SDLPrintfSlot FromUnsignedInteger(ulong value, int nativeByteCount)
 			{
-				return new SDLPrintfSlot(SDLPrintfSlotKind.UnsignedInteger, value, nativeByteCount);
+				return new SDLPrintfSlot(SDLPrintfSlotType.UnsignedInteger, value, nativeByteCount);
 			}
 
 			internal static SDLPrintfSlot FromFloatingPoint(double value)
 			{
-				return new SDLPrintfSlot(SDLPrintfSlotKind.FloatingPoint, value, nativeFloatingPointSize);
+				return new SDLPrintfSlot(SDLPrintfSlotType.FloatingPoint, value, nativeFloatingPointSize);
 			}
 
 			internal static SDLPrintfSlot FromUTF8String(string? value, int nativeByteCount)
 			{
-				return new SDLPrintfSlot(SDLPrintfSlotKind.UTF8String, value, nativeByteCount);
+				return new SDLPrintfSlot(SDLPrintfSlotType.UTF8String, value, nativeByteCount);
 			}
 
 			internal static SDLPrintfSlot FromWideString(string? value, int nativeByteCount)
 			{
-				return new SDLPrintfSlot(SDLPrintfSlotKind.WideString, value, nativeByteCount);
+				return new SDLPrintfSlot(SDLPrintfSlotType.WideString, value, nativeByteCount);
 			}
 
 			internal static SDLPrintfSlot FromPointer(nuint value, int nativeByteCount)
 			{
-				return new SDLPrintfSlot(SDLPrintfSlotKind.Pointer, value, nativeByteCount);
+				return new SDLPrintfSlot(SDLPrintfSlotType.Pointer, value, nativeByteCount);
 			}
 		}
 	}
