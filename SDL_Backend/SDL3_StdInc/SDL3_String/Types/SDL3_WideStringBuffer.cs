@@ -29,11 +29,11 @@ namespace SDL3
 			}
 		}
 
-		public int NativeCharacterByteCount
+		public int NativeCharacterWidth
 		{
 			get
 			{
-				return SDLNativeWideText.CurrentNativeCharByteCount;
+				return SDLNativeWideStringUtilities.CurrentNativeCharacterWidth;
 			}
 		}
 

@@ -13,7 +13,7 @@ namespace SDL3
 			WideChar_Mode
 		}
 
-		internal enum SDLPrintfIntegerWidth 
+		internal enum SDLPrintfIntegerSlotSize
 		{
 			ShortInt = 4,
 			LongInt = 8
@@ -51,18 +51,18 @@ namespace SDL3
 
 				switch (value) {
 					case sbyte typed:
-						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerWidth.ShortInt);
+						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerSlotSize.ShortInt);
 					case byte typed:
-						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerWidth.ShortInt);
+						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerSlotSize.ShortInt);
 					case short typed:
-						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerWidth.ShortInt);
+						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerSlotSize.ShortInt);
 					case ushort typed:
-						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerWidth.ShortInt);
+						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerSlotSize.ShortInt);
 					case int typed:
-						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerWidth.ShortInt);
+						return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerSlotSize.ShortInt);
 					case uint typed:
 						if (typed <= int.MaxValue) {
-							return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerWidth.ShortInt);
+							return SDLPrintfSlot.FromSignedInteger(typed, (int)SDLPrintfIntegerSlotSize.ShortInt);
 						}
 						else {
 							goto default;
@@ -72,9 +72,80 @@ namespace SDL3
 				}
 			}
 
-			private static SDLPrintfSlot ReadSignedIntegerSlot(string widthModifier, object?[] args, ref int argIndex, char conversion, SDLPrintfArgumentLayout layout)
+			private static SDLPrintfSlot ReadSignedIntegerSlot(string slotSizeModifier, object?[] args, ref int argIndex, char conversion, SDLPrintfArgumentLayout layout)
 			{
 				object? value = ReadNextArgument(args, ref argIndex, $"%{conversion}");
+				int nativeSignedIntegerSlotSize = GetNativeIntegerSlotSize(slotSizeModifier, layout);
+
+				switch (value) {
+					case sbyte typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case byte typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case short typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case ushort typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case int typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case uint typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case long typed:
+						return SDLPrintfSlot.FromSignedInteger(typed, nativeSignedIntegerSlotSize);
+					case nint typed:
+						return SDLPrintfSlot.FromSignedInteger((long)typed, nativeSignedIntegerSlotSize);
+					case CLong typed:
+						return SDLPrintfSlot.FromSignedInteger((long)typed.Value, nativeSignedIntegerSlotSize);
+					default:
+						throw new ArgumentException($"the %{conversion} conversion requires a signed integer scalar.", nameof(args));
+				}
+			}
+
+			private static SDLPrintfSlot ReadUnsignedIntegerSlot(string slotSizeModifier, object?[] args, ref int argIndex, char conversion, SDLPrintfArgumentLayout layout) 
+			{
+				object? value = ReadNextArgument(args, ref argIndex, $"%{conversion}");
+				int nativeUnsignedIntegerSlotSize = GetNativeIntegerSlotSize(slotSizeModifier, layout);
+
+				switch (value) {
+					case sbyte typed:
+						return SDLPrintfSlot.FromUnsignedInteger(unchecked((ulong)typed), nativeUnsignedIntegerSlotSize);
+					case byte typed:
+						return SDLPrintfSlot.FromUnsignedInteger(typed, nativeUnsignedIntegerSlotSize);
+					case short typed:
+						return SDLPrintfSlot.FromUnsignedInteger(unchecked((ulong)typed), nativeUnsignedIntegerSlotSize);
+					case ushort typed:
+						return SDLPrintfSlot.FromUnsignedInteger(typed, nativeUnsignedIntegerSlotSize);
+					case int typed:
+						return SDLPrintfSlot.FromUnsignedInteger(unchecked((ulong)typed), nativeUnsignedIntegerSlotSize);
+					case uint typed:
+						return SDLPrintfSlot.FromUnsignedInteger(typed, nativeUnsignedIntegerSlotSize);
+					case long typed:
+						return SDLPrintfSlot.FromUnsignedInteger(unchecked((ulong)typed), nativeUnsignedIntegerSlotSize);
+					case ulong typed:
+						return SDLPrintfSlot.FromUnsignedInteger(typed, nativeUnsignedIntegerSlotSize);
+					case nint typed:
+						return SDLPrintfSlot.FromUnsignedInteger(unchecked((ulong)(long)typed), nativeUnsignedIntegerSlotSize);
+					case nuint typed:
+						return SDLPrintfSlot.FromUnsignedInteger((ulong)typed, nativeUnsignedIntegerSlotSize);
+					case CLong typed:
+						return SDLPrintfSlot.FromUnsignedInteger(unchecked((ulong)(long)typed.Value), nativeUnsignedIntegerSlotSize);
+					case CULong typed:
+						return SDLPrintfSlot.FromUnsignedInteger((ulong)typed.Value, nativeUnsignedIntegerSlotSize);
+					default:
+						throw new ArgumentException($"The %{conversion} conversion requires an integer scalar.", nameof(args));
+				}
+			}
+
+			private static SDLPrintfSlot ReadCharacterSlot(string slotSizeModifier, object?[] args, ref int argIndex, SDLPrintfStringFormatMode mode)
+			{
+				if (mode == SDLPrintfStringFormatMode.UTF8_Mode && slotSizeModifier.Length != 0) {
+					throw new NotSupportedException("Wide or length-modified %c conversions are not supported by the SDL UTF-8 printf path");
+				}
+				else if (mode == SDLPrintfStringFormatMode.WideChar_Mode && (slotSizeModifier != "" || slotSizeModifier != "l")) {
+					throw new NotSupportedException($"Unsupported SDL wide printf character length modifier '{slotSizeModifier}'.");
+				}
+
+				object? value = ReadNextArgument(args, ref argIndex, "%c")
 
 			}
 
@@ -100,7 +171,7 @@ namespace SDL3
 
 			private static int SkipAsciiDigits(string fmt, int index)
 			{
-				while ((index < fmt.Length) && (fmt[index] >= '0') && (fmt[index] <= '9'){
+				while ((index < fmt.Length) && (fmt[index] >= '0') && (fmt[index] <= '9')) {
 					index++;
 				}
 
@@ -140,30 +211,30 @@ namespace SDL3
 				return string.Empty;
 			}
 
-			private static int GetNativeIntegerBitWidth(string widthModifier, SDLPrintfArgumentLayout layout)
+			private static int GetNativeIntegerSlotSize(string slotSizeModifier, SDLPrintfArgumentLayout layout)
 			{
-				switch (widthModifier) {
+				switch (slotSizeModifier) {
 					case "":
 					case "h":
 					case "hh":
-						return (int)SDLPrintfIntegerWidth.ShortInt;
+						return (int)SDLPrintfIntegerSlotSize.ShortInt;
 					case "l":
 						return layout.longByteCount;
 					case "ll":
 					case "j":
-						return (int)SDLPrintfIntegerWidth.LongInt;
+						return (int)SDLPrintfIntegerSlotSize.LongInt;
 					case "z":
 					case "t":
 						return layout.ptrByteCount;
 					default:
-						throw new NotSupportedException($"Unsupported integer length modifier '{widthModifier}'.");
+						throw new NotSupportedException($"Unsupported integer slot size modifier '{slotSizeModifier}'.");
 				}
 			}
 
-			private static object? ReadNextArgument(object?[] args, ref int argIndex, string role)
+			private static object? ReadNextArgument(object?[] args, ref int argIndex, string argDescription)
 			{
 				if (argIndex >= args.Length) {
-					throw new FormatException($"The format string requires an argument for {role}, but no argument remains.");
+					throw new FormatException($"The format string requires an argument for {argDescription}, but no argument remains.");
 				}
 
 				return args[argIndex++];

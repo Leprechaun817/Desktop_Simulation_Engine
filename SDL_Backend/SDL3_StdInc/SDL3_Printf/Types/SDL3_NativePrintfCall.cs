@@ -39,7 +39,7 @@ namespace SDL3
 				this.ownedBuffers = ownedBuffers;
 			}
 
-			internal static SDLNativePrintfCallList CreatePrintfArgumentArray(ReadOnlySpan<SDLPrintfSlot> slots, int nativeWideCharByteCount)
+			internal static SDLNativePrintfCallList CreatePrintfCallList(ReadOnlySpan<SDLPrintfSlot> slots, int nativeWideCharByteCount)
 			{
 				if (slots.Length > MaxArgumentCount) {
 					throw new FormatException($"SDL printf helpers support at most {MaxArgumentCount} variadic arguments.");
