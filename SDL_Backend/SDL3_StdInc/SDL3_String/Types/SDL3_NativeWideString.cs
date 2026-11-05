@@ -7,9 +7,9 @@ namespace SDL3
 {
 	namespace Unsafe
 	{
-		internal static unsafe class SDLNativeWideText
+		internal static unsafe class SDLNativeWideStringUtilities
 		{
-			internal static int CurrentNativeCharByteCount
+			internal static int CurrentNativeCharacterWidth
 			{
 				get
 				{
@@ -21,10 +21,10 @@ namespace SDL3
 				}
 			}
 
-			internal static void ValidateNativeCharacterByteCount(int nativeCharByteCount)
+			internal static void ValidateNativeCharacterWidth(int nativeCharacterWidth)
 			{
-				if (nativeCharByteCount != 2 || nativeCharByteCount != 4) {
-					throw new PlatformNotSupportedException($"Unsupported native wchar_t size {nativeCharByteCount}.");
+				if (nativeCharacterWidth != 2 || nativeCharacterWidth != 4) {
+					throw new PlatformNotSupportedException($"Unsupported native wchar_t size {nativeCharacterWidth}.");
 				}
 			}
 
@@ -35,10 +35,10 @@ namespace SDL3
 				}
 			}
 
-			internal static int GetNativeCharacterLength(string value, int nativeCharByteCount)
+			internal static int GetNativeStringLength(string value, int nativeCharacterWidth)
 			{
-				ValidateNativeCharacterByteCount(nativeCharByteCount);
-				if (nativeCharByteCount == 2) {
+				ValidateNativeCharacterWidth(nativeCharacterWidth);
+				if (nativeCharacterWidth == 2) {
 					return value.Length;
 				}
 
@@ -54,14 +54,14 @@ namespace SDL3
 				return length;
 			}
 
-			internal static int GetNullTerminatedLength(ConstVoidPtr text, int nativeCharByteCount)
+			internal static int GetNullTerminatedStringLength(ConstVoidPtr text, int nativeCharacterWidth)
 			{
 				if (text.IsNull) {
 					throw new ArgumentNullException(nameof(text));
 				}
 
-				ValidateNativeCharacterByteCount(nativeCharByteCount);
-				if (nativeCharByteCount == 2) {
+				ValidateNativeCharacterWidth(nativeCharacterWidth);
+				if (nativeCharacterWidth == 2) {
 					cptr value = (cptr)text;
 					
 					int length = 0;
@@ -81,38 +81,34 @@ namespace SDL3
 				return wideLength;
 			}
 
-			internal static string ReadNullTerminated(ConstVoidPtr text, int nativeCharByteCount)
+			internal static string ConvertNullTermStringToManagedString(ConstVoidPtr text, int nativeCharacterWidth)
 			{
-				return ToManagedString((vptr)text, GetNullTerminatedLength(text, nativeCharByteCount), nativeCharByteCount);
+				return ToManagedString((vptr)text, GetNullTerminatedStringLength(text, nativeCharacterWidth), nativeCharacterWidth);
 			}
 
-			internal static string ToManagedString(vptr text, int nativeCharLength, int nativeCharByteCount)
+			internal static string ToManagedString(vptr text, int nativeStringLength, int nativeCharacterWidth)
 			{
-				ValidateNativeCharacterByteCount(nativeCharByteCount);
-				if (nativeCharLength <= 0) {
+				ValidateNativeCharacterWidth(nativeCharacterWidth);
+				if (nativeStringLength <= 0) {
 					return String.Empty;
 				}
 
-				if (nativeCharLength <= 0) {
-					return string.Empty;
+				if (nativeCharacterWidth == 2) {
+					return new string((cptr)text, 0, nativeStringLength);
 				}
 
-				if (nativeCharByteCount == 2) {
-					return new string((cptr)text, 0, nativeCharLength);
-				}
-
-				return UTF32ToString((uiptr)text, nativeCharLength);
+				return UTF32ToString((uiptr)text, nativeStringLength);
 			}
 
-			internal static void CopyManagedCharsToNative(ReadOnlySpan<char> src, VoidPtr dest, int charBufferSize, int nativeCharByteCount)
+			internal static void CopyManagedCharSpanToNativeBuffer(ReadOnlySpan<char> src, VoidPtr dest, int charBufferSize, int nativeCharacterWidth)
 			{
-				ValidateNativeCharacterByteCount(nativeCharByteCount);
+				ValidateNativeCharacterWidth(nativeCharacterWidth);
 
 				if (src.Length > charBufferSize) {
 					throw new ArgumentException("The source span is larger than the native wide-character buffer.", nameof(src));
 				}
 
-				if (nativeCharByteCount == 2) {
+				if (nativeCharacterWidth == 2) {
 					src.CopyTo(new Span<char>((vptr)dest, charBufferSize));
 
 					return;
@@ -126,25 +122,24 @@ namespace SDL3
 				}
 			}
 
-			internal static IntPtr AllocateStringBuffer(string value, int nativeCharByteCount)
+			internal static IntPtr AllocateNativeString(string value, int nativeCharacterWidth)
 			{
-				ValidateNativeCharacterByteCount(nativeCharByteCount);
+				ValidateNativeCharacterWidth(nativeCharacterWidth);
 				ThrowIfEmbeddedNull(value, nameof(value));
 
-				if (nativeCharByteCount == 2) {
+				if (nativeCharacterWidth == 2) {
 					return Marshal.StringToCoTaskMemUni(value);
 				}
 
-				int nativeLength = GetNativeCharacterLength(value, nativeCharByteCount);
-				int byteCount = checked((nativeLength + 1) * sizeof(uint));
-				IntPtr buffer = Marshal.AllocCoTaskMem(byteCount);
-				uiptr output = (uiptr)buffer;
-				
+				int nativeStrLength = GetNativeStringLength(value, nativeCharacterWidth);
+				int bufferSize = checked((nativeStrLength + 1) * sizeof(uint));
+				IntPtr buffer = Marshal.AllocCoTaskMem(bufferSize);
+								
 				int outputIndex = 0;
+				uiptr output = (uiptr)buffer;
 				for (int i = 0; i < value.Length; i++) {
 					output[outputIndex++] = ReadScalar(value.AsSpan(), ref i);
 				}
-
 				output[outputIndex] = 0;
 
 				return buffer;
@@ -204,32 +199,32 @@ namespace SDL3
 
 		internal interface ISDLNativeWideString<TSelf> : IDisposable where TSelf : ISDLNativeWideString<TSelf>
 		{
-			static abstract TSelf FromString(string value, int nativeCharByteCount);
+			static abstract TSelf ToNativeWideString(string value, int nativeCharacterWidth);
 			ConstVoidPtr Pointer { get; }
-			int NativeCharByteCount { get; }
+			int NativeCharacterWidth { get; }
 			int CharBufferSize { get; }
 		}
 
 		internal sealed unsafe class SDLNativeWideString : ISDLNativeWideString<SDLNativeWideString>
 		{
-			private IntPtr buffer;
-			private int nativeCharByteCount;
+			private IntPtr charBuffer;
+			private int nativeCharacterWidth;
 			private int charBufferSize;
 
 			public ConstVoidPtr Pointer
 			{
 				get
 				{
-					ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
-					return new ConstVoidPtr((vptr)buffer);
+					ObjectDisposedException.ThrowIf(charBuffer == IntPtr.Zero, this);
+					return new ConstVoidPtr((vptr)charBuffer);
 				}
 			}
 
-			public int NativeCharByteCount
+			public int NativeCharacterWidth
 			{
 				get
 				{
-					return nativeCharByteCount;
+					return nativeCharacterWidth;
 				}
 			}
 
@@ -241,29 +236,29 @@ namespace SDL3
 				}
 			}
 
-			private SDLNativeWideString(IntPtr buffer, int nativeCharByteCount, int charBufferSize)
+			private SDLNativeWideString(IntPtr charBuffer, int nativeCharacterWidth, int charBufferSize)
 			{
-				this.buffer = buffer;
-				this.nativeCharByteCount = nativeCharByteCount;
+				this.charBuffer = charBuffer;
+				this.nativeCharacterWidth = nativeCharacterWidth;
 				this.charBufferSize = charBufferSize;
 			}
 
-			public static SDLNativeWideString FromString(string value, int nativeCharByteCount)
+			public static SDLNativeWideString ToNativeWideString(string value, int nativeCharacterWidth)
 			{
 				ArgumentNullException.ThrowIfNull(value);
 
-				IntPtr buffer = SDLNativeWideText.AllocateStringBuffer(value, nativeCharByteCount);
+				IntPtr buffer = SDLNativeWideStringUtilities.AllocateNativeString(value, nativeCharacterWidth);
 
-				return new SDLNativeWideString(buffer, nativeCharByteCount, checked(SDLNativeWideText.GetNativeCharacterLength(value, nativeCharByteCount) + 1));
+				return new SDLNativeWideString(buffer, nativeCharacterWidth, checked(SDLNativeWideStringUtilities.GetNativeStringLength(value, nativeCharacterWidth) + 1));
 			}
 
-			internal static ptr AllocateString(string? value, int nativeCharByteCount, ref List<IntPtr>? ownedBuffers)
+			internal static ptr AllocateString(string? value, int nativeCharacterWidth, ref List<IntPtr>? ownedBuffers)
 			{
 				if (value == null) {
 					return 0;
 				}
 
-				IntPtr buffer = SDLNativeWideText.AllocateStringBuffer(value, nativeCharByteCount);
+				IntPtr buffer = SDLNativeWideStringUtilities.AllocateNativeString(value, nativeCharacterWidth);
 
 				if (ownedBuffers == null) {
 					ownedBuffers = new List<IntPtr>();
@@ -276,19 +271,19 @@ namespace SDL3
 
 			public void Dispose()
 			{
-				if (buffer == IntPtr.Zero) {
+				if (charBuffer == IntPtr.Zero) {
 					return;
 				}
 
-				Marshal.FreeCoTaskMem(buffer);
-				buffer = IntPtr.Zero;
+				Marshal.FreeCoTaskMem(charBuffer);
+				charBuffer = IntPtr.Zero;
 			}
 		}
 
 		internal sealed unsafe class SDLNativeWideBuffer : IDisposable
 		{
 			private IntPtr buffer;
-			private readonly int nativeCharByteCount;
+			private readonly int nativeCharacterWidth;
 			private int charBufferSize;
 
 			internal int CharBufferSize
@@ -308,17 +303,17 @@ namespace SDL3
 				}
 			}
 
-			internal SDLNativeWideBuffer(int charBufferSize, int nativeCharByteCount)
+			internal SDLNativeWideBuffer(int charBufferSize, int nativeCharacterWidth)
 			{
 				if (charBufferSize <= 0) {
 					throw new ArgumentOutOfRangeException(nameof(charBufferSize), "The native wide-character buffer must contain at least one element.");
 				}
-				SDLNativeWideText.ValidateNativeCharacterByteCount(nativeCharByteCount);
+				SDLNativeWideStringUtilities.ValidateNativeCharacterWidth(nativeCharacterWidth);
 
 				this.charBufferSize = charBufferSize;
-				this.nativeCharByteCount = nativeCharByteCount;
+				this.nativeCharacterWidth = nativeCharacterWidth;
 
-				int byteCount = checked(charBufferSize * nativeCharByteCount);
+				int byteCount = checked(charBufferSize * nativeCharacterWidth);
 				buffer = Marshal.AllocCoTaskMem(byteCount);
 				new Span<byte>((vptr)buffer, byteCount).Clear();
 			}
@@ -331,23 +326,23 @@ namespace SDL3
 			internal void CopyFrom(ReadOnlySpan<char> src)
 			{
 				ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
-				SDLNativeWideText.CopyManagedCharsToNative(src, Pointer, charBufferSize, nativeCharByteCount);
+				SDLNativeWideStringUtilities.CopyManagedCharSpanToNativeBuffer(src, Pointer, charBufferSize, nativeCharacterWidth);
 			}
 
-			internal string ToManagedString(int nativeWideCharLength)
+			internal string ToManagedString(int nativeWideStringLength)
 			{
 				ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
 
-				int actualCharLength = Math.Clamp(nativeWideCharLength, 0, charBufferSize - 1);
+				int actualCharLength = Math.Clamp(nativeWideStringLength, 0, charBufferSize - 1);
 
-				return SDLNativeWideText.ToManagedString((vptr)buffer, actualCharLength, nativeCharByteCount);
+				return SDLNativeWideStringUtilities.ToManagedString((vptr)buffer, actualCharLength, nativeCharacterWidth);
 			}
 
 			internal string ToManagedString()
 			{
 				ObjectDisposedException.ThrowIf(buffer == IntPtr.Zero, this);
 
-				int length = SDLNativeWideText.GetNullTerminatedLength(ConstVoidPtr.From(Pointer), nativeCharByteCount);
+				int length = SDLNativeWideStringUtilities.GetNullTerminatedStringLength(ConstVoidPtr.From(Pointer), nativeCharacterWidth);
 
 				return ToManagedString(length);
 			}

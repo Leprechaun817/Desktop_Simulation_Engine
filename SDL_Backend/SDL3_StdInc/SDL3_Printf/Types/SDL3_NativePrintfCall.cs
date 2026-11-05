@@ -7,7 +7,7 @@ namespace SDL3
 {
 	namespace Unsafe
 	{
-		internal sealed unsafe class SDLNativePrintfCall : IDisposable
+		internal sealed unsafe class SDLNativePrintfCallList : IDisposable
 		{
 			internal const int MaxArgumentCount = 16;
 
@@ -33,13 +33,13 @@ namespace SDL3
 				}
 			}
 
-			private SDLNativePrintfCall(SDLNativePrintfArgument[] args, List<IntPtr>? ownedBuffers)
+			private SDLNativePrintfCallList(SDLNativePrintfArgument[] args, List<IntPtr>? ownedBuffers)
 			{
 				this.args = args;
 				this.ownedBuffers = ownedBuffers;
 			}
 
-			internal static SDLNativePrintfCall Create(ReadOnlySpan<SDLPrintfSlot> slots, int nativeWideCharByteCount)
+			internal static SDLNativePrintfCallList CreatePrintfArgumentArray(ReadOnlySpan<SDLPrintfSlot> slots, int nativeWideCharByteCount)
 			{
 				if (slots.Length > MaxArgumentCount) {
 					throw new FormatException($"SDL printf helpers support at most {MaxArgumentCount} variadic arguments.");
@@ -50,7 +50,7 @@ namespace SDL3
 
 				for (int i = 0; i < slots.Length; i++) {
 					SDLPrintfSlot slot = slots[i];
-					arguments[i].nativeByteCount = slot.NativeByteCount;
+					arguments[i].nativeByteCount = slot.NativeSlotSize;
 
 					switch (slot.SlotType) {
 						case SDLPrintfSlotType.SignedInteger:
@@ -82,7 +82,7 @@ namespace SDL3
 					}
 				}
 
-				return new SDLNativePrintfCall(arguments, ownedNativeBuffers);
+				return new SDLNativePrintfCallList(arguments, ownedNativeBuffers);
 			}
 
 			public void Dispose()
