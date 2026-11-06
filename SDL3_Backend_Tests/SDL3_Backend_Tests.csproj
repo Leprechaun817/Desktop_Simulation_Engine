@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
@@ -53,7 +53,10 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SDL_Backend\SDL3_Backend.csproj" />
+	  <ProjectReference Include="..\SDL_Backend\SDL3_Backend.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="..\SDL_Backend\" />
 	</ItemGroup>
 	<Target Name="ValidateSdl3BackendTestInputs" BeforeTargets="AssignProjectConfiguration;ResolveProjectReferences;CoreCompile">
 		<Error Condition="'$(Platform)' != 'x64'" Text="SDL3_Backend_Tests only supports Platform=x64 because it tests the x64 SDL3_Backend build and x64 SDL3.dll." />
