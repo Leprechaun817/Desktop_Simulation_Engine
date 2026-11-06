@@ -44,7 +44,7 @@ namespace SDL3
 			GDKSystem = 64
 		}
 
-		public readonly record struct SDLPrintfArgumentLayout(int ptrByteCount, int longByteCount);
+		public readonly record struct SDLPrintfArgumentLayout(int nativePointerSize, int nativeLongTypeSize);
 
 		public readonly record struct SDLInteropProfile(SDLValistABI valistABI, string? sdllibPath, Version? sdlVersion, SDLInteropFeatureFlags supportedFeatures,
 														SDLSystemFeatureFlags systemFeatures);
